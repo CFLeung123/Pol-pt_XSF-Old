@@ -1,0 +1,40 @@
+
+
+
+	PROGRAM Main
+
+	USE GammaMatrices
+	USE Input
+	USE Parameters
+	USE Propagators	
+	USE Compute
+
+
+	implicit none
+
+
+	!Initialization of the setup
+	call ReadInput()
+	call TemporalExtent(lat_size,deriv)
+    call GammaStructureConstruction()
+	call flav_counter_init()
+	call momentum_degeneracy(lat_size,mom_deg)
+	print*, multiplicity(:,:,:)
+
+	call PrintInput()
+
+	call Compute_stuff(lat_size,gam_i,gam_i2,gam4f_i,gam4f_i2,flav1,flav2,flav3,flav4)	
+	
+
+
+
+	END PROGRAM Main
+
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+
+
+
