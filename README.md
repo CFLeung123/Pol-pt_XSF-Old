@@ -1,5 +1,5 @@
 # pt_XSF-Old
-# ifx compiler version, ifort is now deprecated and was discontinued in October 2024
+## ifx compiler version, ifort is now deprecated and was discontinued in October 2024
 
 
 This code computes various correlation functions (gX, lY, g1, l1, gVt, lVt, and 4‑fermion operators) in lattice QCD with Schrödinger Functional (SF) boundary conditions, at tree level and at one loop. The calculations are performed for Wilson and Luscher–Weisz gauge actions, including improvement terms (clover, boundary counterterms).
