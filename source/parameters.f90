@@ -6,9 +6,9 @@
 	! This module contains:
 	!
 	! 		- Definitions of essential parameters for the rest of the calculation.
-	!		- Definition of several utility functions and subroutines 
+	!		- Definition of several utility functions and subroutines
 	!		- Definition of traces of products of 4x4 matrices
-	!		- Definition of functions for naming correlation functions		
+	!		- Definition of functions for naming correlation functions
 	!
 	implicit none
 	integer :: c0, c1	! Parameters such that x_0 in [c0,c1]
@@ -23,7 +23,7 @@
 
 	SUBROUTINE flav_counter_init()
 	!
-	! Sets a value to index flavour pairs.	
+	! Sets a value to index flavour pairs.
 	!
 	f1f2(1,1)=1	!uu
 	f1f2(1,2)=2	!ud
@@ -33,7 +33,7 @@
 	END SUBROUTINE flav_counter_init
 
 
-	
+
 
 	SUBROUTINE momentum_degeneracy(l,mom_deg)
 	!
@@ -51,7 +51,7 @@
 
 	if(mom_deg.eq.1)then
 
-	do i=0,l-1			
+	do i=0,l-1
 	do j=i,l-1
 	do k=j,l-1
 
@@ -70,7 +70,7 @@
 		      nequals=2
 		    else
 		    endif
-		  endif	
+		  endif
 		endif
 
 		if(nequals.eq.0)then
@@ -79,16 +79,16 @@
 		  if(nequals.eq.2)then
 		    multiplicity(i,j,k)=3
 		  else
-		    multiplicity(i,j,k)=1		
+		    multiplicity(i,j,k)=1
 		  endif
-		endif	
+		endif
 
 	enddo
 	enddo
 	enddo
 
 	else
-	
+
 		multiplicity(:,:,:)=1
 
 	endif
@@ -101,7 +101,7 @@
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-	
+
 	SUBROUTINE adjoint_matrix(A,B)
 	!
 	! Subroutine to calculate the adjoint of a 4x4 matrix
@@ -111,7 +111,7 @@
 	complex(kind=8),dimension(4,4),intent(in) :: A
 	complex(kind=8),dimension(4,4),intent(out) :: B
 	integer :: i,j
-	
+
 	do i=1,4
 	do j=1,4
 
@@ -121,7 +121,7 @@
 	enddo
 
 	END SUBROUTINE adjoint_matrix
-	
+
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -135,34 +135,34 @@
 	integer :: deriv
 
 	if(even_or_odd(l).eq.1)then
-	  c0 = l/2-1	
+	  c0 = l/2-1
 	  c1 = l/2+1
-	  if(deriv.eqv..False.)then		!If we don't want derivatives of the correlation functions
+	  if(deriv .eq. 0)then		!If we don't want derivatives of the correlation functions
 	   c0 = c0 + 1				!this will fix the calculation to be done only at x0=l/2.
-	   c1 = c0	
+	   c1 = c0
 	  endif
 	else
 	  c0=(l-1)/2-1
 	  c1=(l+1)/2+1
-	  if(deriv.eqv.0)then			!If we don't want derivatives of the correlation functions
+	  if(deriv .eq. 0)then		!If we don't want derivatives of the correlation functions
 	   c0 = c0 + 1				!this will fix the calculation to be done only at x0=(l-1)/2
 	   c1 = c1-1				!and at x0=(l+1)/2.
 	  endif
 	endif
 
-	
-	END SUBROUTINE TemporalExtent	
+
+	END SUBROUTINE TemporalExtent
 
 
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 	SUBROUTINE loop_limits(l,s0,t0_a,t0_b,u0_a,u0_b)
-!	-This subroutine defines correctly, for the XSF 
+!	-This subroutine defines correctly, for the XSF
 !	 the temporal indeces inside temporal
 !	 sums when evaluating Sigma1, Sigma2, Gamma1 and the loop diagrams.
 !	-It takes avantage of the delta functions in the vertex functions.
-!	-NOTE that it is adapted to work only with the intel compiler, 
-!	 since the boolean values are: 
+!	-NOTE that it is adapted to work only with the intel compiler,
+!	 since the boolean values are:
 !			true=-1,    false=0
 !	-For a given temporal index s0, it returns the range over which the other
 !	 indeces t0 and u0 should be integrated, which are always adjacent points.
@@ -170,7 +170,7 @@
 !	 are modified to avoid summing outside the SF.
 !
 !	-Input: -s0
-!	
+!
 !	-Output: -t0_a, t0_b: range for t0
 !		 -x0_a, x0_b: range for x0
 	implicit none
@@ -179,9 +179,9 @@
 	integer,intent(out) :: t0_a,t0_b,u0_a,u0_b
 	integer :: c,d,e
 
-	    c = (s0.eq.0)
-	    d = (s0.eq.l)
-	    e = (s0.eq.(l-1))
+		c = merge(-1, 0, s0 .eq. 0)
+		d = merge(-1, 0, s0 .eq. l)
+		e = merge(-1, 0, s0 .eq. (l-1))
 
 !	   if(s0.eq.1)then
 !	    c=-1
@@ -194,12 +194,12 @@
 !	    d=0
 !	   endif
 
-!	    t0_a = s0 - 1 - c 
+!	    t0_a = s0 - 1 - c
 !	    t0_b = s0 + 1 + d
-!	    u0_a = s0 - 1 
+!	    u0_a = s0 - 1
 !	    u0_b = s0 + 1 + d
 
-	    t0_a = s0 - 1 - c 
+	    t0_a = s0 - 1 - c
 	    t0_b = s0 + 1 + d
 	    u0_a = s0 - 1 - c
 	    u0_b = s0 + 1 + e + 2*d
@@ -233,9 +233,10 @@
 	!
 	integer :: n,l
 
-	if(n.ne.0)then
-	  m_period = l-n
+	if (n == 0) then
+	  m_period = 0
 	else
+	  m_period = l - n
 	endif
 
 	END FUNCTION m_period
@@ -250,13 +251,13 @@
 	! Kronecker delta function
 	!
 	integer:: a,b
-	
+
 	if(a.eq.b)then
 	  delta=1.0d0
 	else
 	  delta=0.0d0
 	endif
-	
+
 	END FUNCTION delta
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -308,7 +309,7 @@
 	! Function to calculate the trace of a product of 2 4x4 matrices:
 	!
 	complex(kind=8),dimension(4,4) :: A,B
-	integer :: i,j	
+	integer :: i,j
 
 	Trace2 = dcmplx(0.0d0,0.0d0)
 
@@ -341,7 +342,7 @@
 	  Acum1 = dcmplx(0.0d0,0.0d0)
 
 	  do j=1,4
-	
+
  	    Acum1 = Acum1 + A(i,j)*B(j,k)
 
 	  enddo
@@ -379,11 +380,11 @@
  	    do j=1,4
 
 	      Acum2 = Acum2 + A(i,j)*B(j,k)
-	    
+
 	    enddo
 
 	    Acum1 = Acum1 + Acum2*C(k,l)
-	
+
 	  enddo
 
 	  Trace4 = Trace4 + Acum1*D(l,i)
@@ -426,12 +427,12 @@
 
 		enddo
 
-		Acum2 = Acum2 + Acum3*C(k,l)	      
-	    
+		Acum2 = Acum2 + Acum3*C(k,l)
+
 	    enddo
 
 	    Acum1 = Acum1 + Acum2*D(l,m)
-	
+
 	  enddo
 
 	  Trace5 = Trace5 + Acum1*E(m,i)
@@ -475,19 +476,19 @@
 		do j=1,4
 
 		  Acum4 = Acum4 + A(i,j)*B(j,k)
-		
+
 		enddo
-		
+
 		Acum3 = Acum3 + Acum4*C(k,l)
-	
+
 	      enddo
 
-	      Acum2 = Acum2 + Acum3*D(l,m)	      
-	    
+	      Acum2 = Acum2 + Acum3*D(l,m)
+
 	    enddo
 
 	    Acum1 = Acum1 + Acum2*E(m,n)
-	
+
 	  enddo
 
 	  Trace6 = Trace6 + Acum1*F(n,i)
@@ -925,6 +926,3 @@
 
 
 	END MODULE Parameters
-
-
-	
